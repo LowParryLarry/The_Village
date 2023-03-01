@@ -11,6 +11,19 @@ namespace The_Village
         internal void Save(Village village)
         {
 
+            village.DaysGone= 0;
+
+            //Daysgone: 0
+            //Workerslots: 0 / 6
+            //Underconstruction: 0
+            //Buildings: 0
+            //Workers: 0
+            //Food: 10
+            //Wood: 0
+            //Metal: 0
+            //Graveyard: 0
+
+
         }
         internal void Load()
         {

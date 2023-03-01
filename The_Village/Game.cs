@@ -34,14 +34,7 @@ namespace The_Village
                 }               
             }
 
-            if (YouWinCheck())
-            {
-                PrintYouWin();
-            }
-            else
-            {
-                PrintYouLoose();
-            }
+            EndOfGame();
             
             PlayAgain();
         }
@@ -257,5 +250,19 @@ namespace The_Village
             }
             return false;
         }
+        public void EndOfGame()
+        {
+            if (YouWinCheck())
+            {
+                PrintYouWin();
+            }
+            else
+            {
+                PrintYouLoose();
+            }
+        }
+
+
+
     }
 }

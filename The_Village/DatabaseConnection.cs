@@ -23,6 +23,8 @@ namespace The_Village
             //Metal: 0
             //Graveyard: 0
 
+            //Hej! Ny test-commit
+
 
         }
         internal void Load()

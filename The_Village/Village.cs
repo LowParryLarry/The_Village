@@ -121,7 +121,7 @@ namespace The_Village
             }
         }   
         public void AddWood()
-        {//obs funkar ej
+        {
             if (BuildingExists("Woodmill", _buildings))
             {
                 _wood += 3; 
@@ -266,6 +266,7 @@ namespace The_Village
 
             Console.Clear();
 
+            Console.ForegroundColor = ConsoleColor.DarkRed;
             Console.WriteLine($@"
 ╔═══════════════════════════╗
 ║                           ║  
@@ -291,6 +292,7 @@ namespace The_Village
 ╚═══════════════════════════╝
 ");
 
+            Console.ForegroundColor = ConsoleColor.White;
             Console.SetCursorPosition(left, 3); 
             Console.WriteLine($"Days gone: {_daysGone}");
             Console.SetCursorPosition(left, 4);
@@ -331,11 +333,11 @@ namespace The_Village
                 Console.WriteLine($"Occupation: {worker.Occupation}, IsHungry: {worker.IsHungry}, DaysHungry: {worker.DaysHungry}, {worker.GetHashCode()}");
             }
         }        
-        public void SaveProgress()
+        public void SaveProgress() //Ska implementeras
         {
 
         }
-        public void LoadProgress()
+        public void LoadProgress() //Ska implementeras
         {
 
         }

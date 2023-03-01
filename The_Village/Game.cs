@@ -24,12 +24,25 @@ namespace The_Village
         }
         public void Run()
         {
-            while (!Village.BuildingExists("Castle", Village.Buildings))
+            while (true)
             {
                 MainMenu();
+
+                if (YouWinCheck() || YouLooseCheck())
+                {
+                    break;
+                }               
             }
 
-            PrintCastle();
+            if (YouWinCheck())
+            {
+                PrintYouWin();
+            }
+            else
+            {
+                PrintYouLoose();
+            }
+            
             PlayAgain();
         }
         public int ReadIntInstantly(int max)
@@ -153,7 +166,7 @@ namespace The_Village
                 PassTimeMenu();
             }
         }
-        public void PrintCastle()
+        public void PrintYouWin()
         {
             //Console.OutputEncoding = System.Text.Encoding.GetEncoding(28591);
 
@@ -188,6 +201,22 @@ namespace The_Village
                  |__________|-------|________\_____/________|-------|__________|");           
 
         }
+        public void PrintYouLoose()
+        {
+            Console.Clear();
+            Console.WriteLine(@"
+
+  ▄████  ▄▄▄       ███▄ ▄███▓▓█████  ▒█████   ██▒   █▓▓█████  ██▀███  
+ ██▒ ▀█▒▒████▄    ▓██▒▀█▀ ██▒▓█   ▀ ▒██▒  ██▒▓██░   █▒▓█   ▀ ▓██ ▒ ██▒
+▒██░▄▄▄░▒██  ▀█▄  ▓██    ▓██░▒███   ▒██░  ██▒ ▓██  █▒░▒███   ▓██ ░▄█ ▒
+░▓█  ██▓░██▄▄▄▄██ ▒██    ▒██ ▒▓█  ▄ ▒██   ██░  ▒██ █░░▒▓█  ▄ ▒██▀▀█▄  
+░▒▓███▀▒ ▓█   ▓██▒▒██▒   ░██▒░▒████▒░ ████▓▒░   ▒▀█░  ░▒████▒░██▓ ▒██▒
+ ░▒   ▒  ▒▒   ▓▒█░░ ▒░   ░  ░░░ ▒░ ░░ ▒░▒░▒░    ░ ▐░  ░░ ▒░ ░░ ▒▓ ░▒▓░
+  ░   ░   ▒   ▒▒ ░░  ░      ░ ░ ░  ░  ░ ▒ ▒░    ░ ░░   ░ ░  ░  ░▒ ░ ▒░
+░ ░   ░   ░   ▒   ░      ░      ░   ░ ░ ░ ▒       ░░     ░     ░░   ░ 
+      ░       ░  ░       ░      ░  ░    ░ ░        ░     ░  ░   ░     
+                                                  ░");
+        }
         public void PlayAgain()
         {            
             Console.WriteLine("\n\nDo you want to play again? (Y/N)");
@@ -212,5 +241,21 @@ namespace The_Village
                 }
             }
         }        
+        public bool YouLooseCheck()
+        {
+            if (_village.DaysGone > 0 && _village.Workers.Count == 0)
+            {
+                return true;
+            }
+            return false;
+        }
+        public bool YouWinCheck()
+        {
+            if (Village.BuildingExists("Castle", Village.Buildings))
+            {
+                return true;
+            }
+            return false;
+        }
     }
 }

@@ -1,0 +1,15 @@
+C:\Users\mjoak\Documents\OPA22\Inlämningar\C# The Village\The_Village\The_Village\bin\Debug\net6.0\The_Village.exe
+C:\Users\mjoak\Documents\OPA22\Inlämningar\C# The Village\The_Village\The_Village\bin\Debug\net6.0\The_Village.deps.json
+C:\Users\mjoak\Documents\OPA22\Inlämningar\C# The Village\The_Village\The_Village\bin\Debug\net6.0\The_Village.runtimeconfig.json
+C:\Users\mjoak\Documents\OPA22\Inlämningar\C# The Village\The_Village\The_Village\bin\Debug\net6.0\The_Village.dll
+C:\Users\mjoak\Documents\OPA22\Inlämningar\C# The Village\The_Village\The_Village\bin\Debug\net6.0\The_Village.pdb
+C:\Users\mjoak\Documents\OPA22\Inlämningar\C# The Village\The_Village\The_Village\obj\Debug\net6.0\The_Village.csproj.AssemblyReference.cache
+C:\Users\mjoak\Documents\OPA22\Inlämningar\C# The Village\The_Village\The_Village\obj\Debug\net6.0\The_Village.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\mjoak\Documents\OPA22\Inlämningar\C# The Village\The_Village\The_Village\obj\Debug\net6.0\The_Village.AssemblyInfoInputs.cache
+C:\Users\mjoak\Documents\OPA22\Inlämningar\C# The Village\The_Village\The_Village\obj\Debug\net6.0\The_Village.AssemblyInfo.cs
+C:\Users\mjoak\Documents\OPA22\Inlämningar\C# The Village\The_Village\The_Village\obj\Debug\net6.0\The_Village.csproj.CoreCompileInputs.cache
+C:\Users\mjoak\Documents\OPA22\Inlämningar\C# The Village\The_Village\The_Village\obj\Debug\net6.0\The_Village.dll
+C:\Users\mjoak\Documents\OPA22\Inlämningar\C# The Village\The_Village\The_Village\obj\Debug\net6.0\refint\The_Village.dll
+C:\Users\mjoak\Documents\OPA22\Inlämningar\C# The Village\The_Village\The_Village\obj\Debug\net6.0\The_Village.pdb
+C:\Users\mjoak\Documents\OPA22\Inlämningar\C# The Village\The_Village\The_Village\obj\Debug\net6.0\The_Village.genruntimeconfig.cache
+C:\Users\mjoak\Documents\OPA22\Inlämningar\C# The Village\The_Village\The_Village\obj\Debug\net6.0\ref\The_Village.dll

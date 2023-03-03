@@ -6,30 +6,28 @@ using System.Threading.Tasks;
 
 namespace The_Village
 {
-    internal class DatabaseConnection
+    public class DatabaseConnection
     {
-        internal void Save(Village village)
+        //Egna fields?
+        //Food
+        //Metal
+        //List<Worker>
+        //osv .. ?
+
+
+        public virtual void Save()
         {
-
-            village.DaysGone= 0;
-
-            //Daysgone: 0
-            //Workerslots: 0 / 6
-            //Underconstruction: 0
-            //Buildings: 0
-            //Workers: 0
-            //Food: 10
-            //Wood: 0
-            //Metal: 0
-            //Graveyard: 0
-
-            //Hej! Ny test-commit
-
-
+            //Connect to db, send current village state
         }
-        internal void Load()
-        {
-            //Load JSON från db => 
+        public virtual Village Load(string sqlQuery)
+        {            
+            //
+            Village village = new Village();
+
+            village.DaysGone = 99;
+            village.Food = 99;            
+
+            return village;
         }
 
     }

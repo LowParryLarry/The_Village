@@ -13,14 +13,13 @@ namespace The_Village
     public class Village
     {
         private int _food, _wood, _metal, _daysGone;
+        private DatabaseConnection _dbConnection;      
         private List<Worker> _workerList = new List<Worker>();
         private List<Worker> _workers = new List<Worker>();
         private List<Worker> _graveyard = new List<Worker>();
         private List<Building> _buildingList = new List<Building>();
         private List<Building> _underConstruction = new List<Building>();
         private List<Building> _buildings = new List<Building>();
-        private DatabaseConnection _dbConnection = new DatabaseConnection();
-
         public int Food
         {
             get { return _food; }
@@ -63,13 +62,11 @@ namespace The_Village
         {
             get { return _graveyard; }
         }
-
-        internal DatabaseConnection DbConnection
+        public DatabaseConnection DBConnection
         {
             get => _dbConnection;
             set => _dbConnection = value;
         }
-
         public Village()
         {
             VillageSetup();
@@ -77,7 +74,12 @@ namespace The_Village
             _food = 10;
             _wood = 0;
             _metal = 0;
-            _daysGone = 0;            
+            _daysGone = 0;
+            _dbConnection = new DatabaseConnection();
+        }
+        public Village(DatabaseConnection dbConnection)
+        {
+            _dbConnection = dbConnection;
         }
         public void VillageSetup()
         {
@@ -333,13 +335,17 @@ namespace The_Village
                 Console.WriteLine($"Occupation: {worker.Occupation}, IsHungry: {worker.IsHungry}, DaysHungry: {worker.DaysHungry}, {worker.GetHashCode()}");
             }
         }        
-        public void SaveProgress() //Ska implementeras
+        public void SaveProgress() 
         {
 
         }
-        public void LoadProgress() //Ska implementeras
+        public Village LoadProgress() 
         {
+            string sqlQuery = "select * from Village"; //hur vet den??
 
+            var outputVillageState = _dbConnection.Load(sqlQuery);
+
+            return outputVillageState;            
         }
     }
 }

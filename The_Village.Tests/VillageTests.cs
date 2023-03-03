@@ -1,3 +1,5 @@
+using Microsoft.VisualStudio.TestPlatform.Utilities;
+using Moq;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -535,7 +537,35 @@ namespace The_Village.Tests
             Assert.Equal("Castle", actualObject.Name);
         }
 
+        [Fact]
+        public void LoadProgress_GetDataFromDB_ShouldInsertDataToCurrentGame()
+        {
+            Mock<DatabaseConnection>dbcMock = new Mock<DatabaseConnection>();
 
+            Village village = new Village(dbcMock.Object);
+
+            dbcMock
+                .Setup(mock => mock.Load("select * from Village"))
+                .Returns(GetSampleVillage());
+
+            var expected = GetSampleVillage();
+            
+            var actual = village.LoadProgress();
+
+
+            Assert.True(actual != null);
+            Assert.Equal(expected.Food, actual.Food);
+        }
+
+        private Village GetSampleVillage()
+        {
+            Village village = new Village();
+
+            village.DaysGone = 11;
+            village.Food = 11;
+
+            return village;
+        }
 
 
 

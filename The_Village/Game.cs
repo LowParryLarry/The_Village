@@ -61,7 +61,7 @@ namespace The_Village
 
             Console.Clear();
                         
-            Village.PrintVillageStats();            
+            PrintVillageStats();            
             
             Console.SetCursorPosition(4,15);
             Console.WriteLine("1. Add a worker");
@@ -90,7 +90,7 @@ namespace The_Village
         {
             Console.CursorVisible = false;
 
-            Village.ClearBottomBox();
+            ClearBottomBox();
             
             Console.SetCursorPosition(4, 15);
             Console.WriteLine("What worker to build:");
@@ -113,7 +113,7 @@ namespace The_Village
         {
             Console.CursorVisible = false;
 
-            Village.ClearBottomBox();
+            ClearBottomBox();
             
             Console.SetCursorPosition(4, 15);
             Console.WriteLine("Choose a building:");
@@ -139,7 +139,7 @@ namespace The_Village
         {
             Console.CursorVisible = true;
 
-            Village.ClearBottomBox();
+            ClearBottomBox();
             Console.SetCursorPosition(4, 15);
             Console.Write("How many days? ");
 
@@ -151,7 +151,7 @@ namespace The_Village
                 }
             }
             else 
-            {   Village.ClearBottomBox();
+            {   ClearBottomBox();
                 Console.SetCursorPosition(4, 15);
                 Console.WriteLine("Enter a number!");
                 Console.ReadKey(true);
@@ -260,6 +260,72 @@ namespace The_Village
             {
                 PrintYouLoose();
             }
+        }
+        public void PrintVillageStats()
+        {
+            int left = 4;
+
+            Console.Clear();
+
+            Console.ForegroundColor = ConsoleColor.DarkRed;
+            Console.WriteLine($@"
+╔═══════════════════════════╗
+║                           ║  
+║                           ║
+║                           ║ 
+║                           ║
+║                           ║
+║                           ║
+║                           ║
+║                           ║
+║                           ║
+║                           ║
+║                           ║
+╠═══════════════════════════╣
+║                           ║
+║                           ║
+║                           ║
+║                           ║
+║                           ║
+║                           ║
+║                           ║
+║                           ║
+╚═══════════════════════════╝
+");
+
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.SetCursorPosition(left, 3);
+            Console.WriteLine($"Days gone: {Village.DaysGone}");
+            Console.SetCursorPosition(left, 4);
+            Console.WriteLine($"Worker slots: {Village.Workers.Count()}/{Village.TotalWorkerSlots()}");
+            Console.SetCursorPosition(left, 5);
+            Console.WriteLine($"Under construction: {Village.UnderConstruction.Count}");
+            Console.SetCursorPosition(left, 6);
+            Console.WriteLine($"Buildings: {Village.Buildings.Count - 3}");
+            Console.SetCursorPosition(left, 7);
+            Console.WriteLine($"Workers: {Village.Workers.Count}");
+            Console.SetCursorPosition(left, 8);
+            Console.WriteLine($"Food: {Village.Food}");
+            Console.SetCursorPosition(left, 9);
+            Console.WriteLine($"Wood: {Village.Wood}");
+            Console.SetCursorPosition(left, 10);
+            Console.WriteLine($"Metal: {Village.Metal}");
+            Console.SetCursorPosition(left, 11);
+            Console.WriteLine($"Graveyard: {Village.Graveyard.Count}");
+            Console.SetCursorPosition(0, 0);
+
+        }
+        public void ClearBottomBox()
+        {
+            Console.SetCursorPosition(1, 15);
+            Console.WriteLine("                           ");
+            Console.SetCursorPosition(1, 16);
+            Console.WriteLine("                           ");
+            Console.SetCursorPosition(1, 17);
+            Console.WriteLine("                           ");
+            Console.SetCursorPosition(1, 18);
+            Console.WriteLine("                           ");
+
         }
     }
 }

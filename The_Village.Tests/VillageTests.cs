@@ -478,8 +478,7 @@ namespace The_Village.Tests
             village.LoadProgress();
 
             int actual = village.Food;
-            int expected = 11;
-
+            int expected = 33;
 
             //Assert            
             Assert.Equal(expected, actual);
@@ -488,8 +487,7 @@ namespace The_Village.Tests
         {
             Village village = new Village();
 
-            village.DaysGone = 11;
-            village.Food = 11;
+            village.Food = 33;
 
             return village;
         }

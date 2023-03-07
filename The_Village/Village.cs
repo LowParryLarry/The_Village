@@ -44,26 +44,32 @@ namespace The_Village
         public List<Worker> Workers
         {
             get { return _workers; }
+            set { _workers = value; }
         }
         public List<Worker> WorkerList
         {
             get { return _workerList; }
+            set { _workerList = value; }
         }
         public List<Building> Buildings 
         {
             get { return _buildings; }
+            set { _buildings = value; }
         }
         public List<Building> BuildingList
         {
             get { return _buildingList; }
+            set { _buildingList = value; }
         }
         public List<Building> UnderConstruction 
         {
             get { return _underConstruction; }
+            set { _underConstruction = value; }
         }
         public List<Worker> Graveyard
         {
             get { return _graveyard; }
+            set { _graveyard = value; }
         }
         public DatabaseConnection DBConnection
         {
@@ -88,50 +94,30 @@ namespace The_Village
         }
         public void VillageSetup()
         {
+            //Village starts with 3 houses.
             for (int i = 0; i < 3; i++)
             {
                 _buildings.Add(new Building("House", 5, 0, 3, 3, true));
             }
 
+            //Reference list for adding buildings
             _buildingList.Add(new Building("House", 5, 0, 3, 0, false));
             _buildingList.Add(new Building("Farm", 5, 2, 5, 0, false));
             _buildingList.Add(new Building("Woodmill", 5, 1, 5, 0, false));
             _buildingList.Add(new Building("Quarry", 3, 5, 7, 0, false));
             _buildingList.Add(new Building("Castle", 50, 50, 50, 0, false));
 
+            //Reference list for adding workers
             _workerList.Add(new Worker("Worker", "Lumberjack", AddWood));
             _workerList.Add(new Worker("Worker", "Miner", AddMetal));
             _workerList.Add(new Worker("Worker", "Farmer", AddFood));
             _workerList.Add(new Worker("Worker", "Builder", Build));
         }
-        public void AddConstruction(int constructionChoice)
-        {   
-            if (ResourceCalculation(_buildingList[constructionChoice]))
-            {
-                Building fromList = _buildingList[constructionChoice];
-                Building newInstance = (Building)fromList.Clone();
-
-                _underConstruction.Add(newInstance);
-            }
-        }
-        public void AddWorker(int workerChoice)
-        {
-            if (IsNewWorkerAllowed())
-            {
-                Worker fromList = _workerList[workerChoice];
-                Worker newInstance = (Worker)fromList.Clone();
-
-                _workers.Add(newInstance);
-            }
-        }   
         public void Day()
         {
             FeedWorkers();
 
-            foreach (Worker worker in _workers.ToList())
-            {
-                worker.DoWork();
-            }
+            WorkersDoWork();
 
             BuryDead();
 
@@ -171,7 +157,15 @@ namespace The_Village
             }
         }
         public void Build()
-        {   
+        {
+            /*
+            Takes the first building under construction and increase DaysWorkedOn.
+            If DaysWorkedOn == DaysToComplete the building is moved from UnderConstruction
+            to Buildings and IsComplete tag is set to true.
+
+            This function is used by the Worker class through a delegate.
+             */
+
             if (_underConstruction.Count > 0)
             {
                 _underConstruction[0].DaysWorkedOn++;
@@ -187,19 +181,10 @@ namespace The_Village
                 }
             }
         }
-        public bool ResourceCalculation(Building buildingToCheck)
-        {
-            if (_wood >= buildingToCheck.WoodCost && _metal >= buildingToCheck.MetalCost)
-            {
-                _wood -= buildingToCheck.WoodCost;
-                _metal -= buildingToCheck.MetalCost;
-                return true;
-            }
-
-            return false;
-        }
         public bool IsNewWorkerAllowed()
         {
+            //Checks if a new worker is allowed to be added.            
+
             if (TotalWorkerSlots() - _workers.Count > 0)
             {
                 return true;
@@ -207,15 +192,51 @@ namespace The_Village
             
             return false;
         }
-        public void BuryDead()
+        public void AddWorker(int workerChoice)
         {
-            foreach (Worker worker in _workers.ToList())
+            /*
+            Adds a worker from reference list _workerList. The Clone() method comes
+            from the interface ICloneable. It makes it possible to copy an object
+            and create a new instance in _workers.
+            */
+
+            if (IsNewWorkerAllowed())
             {
-                if (worker.IsAlive == false)
-                {
-                    _workers.Remove(worker);
-                    _graveyard.Add(worker);
-                }
+                Worker fromList = _workerList[workerChoice];
+                Worker newInstance = (Worker)fromList.Clone();
+
+                _workers.Add(newInstance);
+            }
+        }   
+        public bool ResourceManager(Building buildingToCheck)
+        {
+            /*
+            Checks if village can afford the specified building. If so,
+            the resources are subtracted from the village instance.
+            */
+
+            if (_wood >= buildingToCheck.WoodCost && _metal >= buildingToCheck.MetalCost)
+            {
+                _wood -= buildingToCheck.WoodCost;
+                _metal -= buildingToCheck.MetalCost;
+                return true;
+            }
+            return false;
+        }
+        public void AddConstruction(int constructionChoice)
+        {
+            /*
+            Adds a building from reference list _buildingList. The Clone() method comes
+            from the interface ICloneable. It makes it possible to copy an object
+            and create a new instance in _underConstruction.
+            */
+
+            if (ResourceManager(_buildingList[constructionChoice]))
+            {
+                Building fromList = _buildingList[constructionChoice];
+                Building newInstance = (Building)fromList.Clone();
+
+                _underConstruction.Add(newInstance);
             }
         }
         public void FeedWorkers()
@@ -234,6 +255,29 @@ namespace The_Village
 
                 KillWorkerCheck(worker);                                
             }          
+        }
+        public void WorkersDoWork()
+        {
+            /*
+            DoWork() holds a delegate containing AddWood(), AddMetal(), AddFood(), Build()
+            depending on the type of worker.
+            */
+
+            foreach (Worker worker in _workers.ToList())
+            {
+                worker.DoWork();
+            }
+        }
+        public void BuryDead()
+        {
+            foreach (Worker worker in _workers.ToList())
+            {
+                if (worker.IsAlive == false)
+                {
+                    _workers.Remove(worker);
+                    _graveyard.Add(worker);
+                }
+            }
         }
         public void KillWorkerCheck(Worker worker)
         {
@@ -255,7 +299,11 @@ namespace The_Village
             return false;
         }
         public int TotalWorkerSlots()
-        {
+        {   
+            /*
+            Checks total workerslots. Number of houses * 2 = total worker slots. 
+            */
+
             int totalWorkerSlots = 0;
 
             foreach (Building building in _buildings)
@@ -267,87 +315,9 @@ namespace The_Village
             }
             return totalWorkerSlots;
         }
-        public void PrintVillageStats()
-        {            
-            int left = 4;            
-
-            Console.Clear();
-
-            Console.ForegroundColor = ConsoleColor.DarkRed;
-            Console.WriteLine($@"
-╔═══════════════════════════╗
-║                           ║  
-║                           ║
-║                           ║ 
-║                           ║
-║                           ║
-║                           ║
-║                           ║
-║                           ║
-║                           ║
-║                           ║
-║                           ║
-╠═══════════════════════════╣
-║                           ║
-║                           ║
-║                           ║
-║                           ║
-║                           ║
-║                           ║
-║                           ║
-║                           ║
-╚═══════════════════════════╝
-");
-
-            Console.ForegroundColor = ConsoleColor.White;
-            Console.SetCursorPosition(left, 3); 
-            Console.WriteLine($"Days gone: {_daysGone}");
-            Console.SetCursorPosition(left, 4);
-            Console.WriteLine($"Worker slots: {_workers.Count()}/{TotalWorkerSlots()}");
-            Console.SetCursorPosition(left, 5);
-            Console.WriteLine($"Under construction: {_underConstruction.Count}");
-            Console.SetCursorPosition(left, 6);
-            Console.WriteLine($"Buildings: {_buildings.Count - 3}");
-            Console.SetCursorPosition(left, 7);
-            Console.WriteLine($"Workers: {_workers.Count}");
-            Console.SetCursorPosition(left, 8);
-            Console.WriteLine($"Food: {_food}");
-            Console.SetCursorPosition(left, 9);
-            Console.WriteLine($"Wood: {_wood}");
-            Console.SetCursorPosition(left, 10);
-            Console.WriteLine($"Metal: {_metal}");
-            Console.SetCursorPosition(left, 11);
-            Console.WriteLine($"Graveyard: {_graveyard.Count}");
-            Console.SetCursorPosition(0,0);
-
-        }
-        public void ClearBottomBox()
+        public void SaveProgress() 
         {
-            Console.SetCursorPosition(1, 15);
-            Console.WriteLine("                           ");
-            Console.SetCursorPosition(1, 16);
-            Console.WriteLine("                           ");
-            Console.SetCursorPosition(1, 17);
-            Console.WriteLine("                           ");
-            Console.SetCursorPosition(1, 18);
-            Console.WriteLine("                           ");
-
-        }
-        public void PrintWorkers()
-        {
-            foreach (Worker worker in _workers)
-            {
-                Console.WriteLine($"Occupation: {worker.Occupation}, IsHungry: {worker.IsHungry}, DaysHungry: {worker.DaysHungry}, {worker.GetHashCode()}");
-            }
-        }        
-        public void SaveProgress(Village village, string sqlQuarry) 
-        {
-            sqlQuarry = "insert into Village (DaysGone, Food ...)";
-
-            sqlQuarry = sqlQuarry.Replace("@DaysGone", $"'{village.DaysGone}'");            
-            sqlQuarry = sqlQuarry.Replace("@Food", $"'{village.Food}'");
-
-            _dbConnection.Save(sqlQuarry);
+            _dbConnection.Save(this);
         }
         public void LoadProgress() 
         {
@@ -358,17 +328,15 @@ namespace The_Village
             _food = output._food;
             _wood = output._wood;
             _metal = output._metal;
-            _daysGone = output._daysGone;                      
-            _workerList = output._workerList;
+            _daysGone = output._daysGone;                                  
             _workers = output._workers;
-            _graveyard = output._graveyard;
-            _buildingList = output._buildingList;
+            _graveyard = output._graveyard;            
             _underConstruction = output._underConstruction;
             _buildings = output._buildings;            
         }
         public void AddRandomWorker()
         {
             AddWorker(_randomizer.RandomInt());
-        }
+        }        
     }
 }

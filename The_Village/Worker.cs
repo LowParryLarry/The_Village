@@ -15,7 +15,7 @@ namespace The_Village
         private string _name, _occupation;
         private bool _isHungry, _isAlive;
         private int _daysHungry;
-
+        
         public string Name
         {
             get { return _name; }

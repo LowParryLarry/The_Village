@@ -13,6 +13,7 @@ namespace The_Village
     public class Village
     {
         private int _food, _wood, _metal, _daysGone;
+        private Randomizer _randomizer;
         private DatabaseConnection _dbConnection;      
         private List<Worker> _workerList = new List<Worker>();
         private List<Worker> _workers = new List<Worker>();
@@ -67,6 +68,11 @@ namespace The_Village
             get => _dbConnection;
             set => _dbConnection = value;
         }
+        public Randomizer Randomizer
+        {
+            get => _randomizer;
+            set => _randomizer = value;
+        }
         public Village()
         {
             VillageSetup();
@@ -75,11 +81,16 @@ namespace The_Village
             _wood = 0;
             _metal = 0;
             _daysGone = 0;
-            _dbConnection = new DatabaseConnection();
+            //_dbConnection = new DatabaseConnection();
+            //_randomizer = new Randomizer();
         }
         public Village(DatabaseConnection dbConnection)
         {
             _dbConnection = dbConnection;
+        }
+        public Village(Randomizer randomizer)
+        {
+            _randomizer = randomizer;
         }
         public void VillageSetup()
         {
@@ -99,6 +110,26 @@ namespace The_Village
             _workerList.Add(new Worker("Worker", "Farmer", AddFood));
             _workerList.Add(new Worker("Worker", "Builder", Build));
         }
+        public void AddConstruction(int constructionChoice)
+        {   
+            if (ResourceCalculation(_buildingList[constructionChoice]))
+            {
+                Building fromList = _buildingList[constructionChoice];
+                Building newInstance = (Building)fromList.Clone();
+
+                _underConstruction.Add(newInstance);
+            }
+        }
+        public void AddWorker(int workerChoice)
+        {
+            if (IsNewWorkerAllowed())
+            {
+                Worker fromList = _workerList[workerChoice];
+                Worker newInstance = (Worker)fromList.Clone();
+
+                _workers.Add(newInstance);
+            }
+        }   
         public void Day()
         {
             FeedWorkers();
@@ -112,16 +143,6 @@ namespace The_Village
 
             DaysGone += 1;            
         }
-        public void AddWorker(int workerChoice)
-        {
-            if (IsNewWorkerAllowed())
-            {
-                Worker fromList = _workerList[workerChoice];
-                Worker newInstance = (Worker)fromList.Clone();
-
-                _workers.Add(newInstance);
-            }
-        }   
         public void AddWood()
         {
             if (BuildingExists("Woodmill", _buildings))
@@ -170,16 +191,6 @@ namespace The_Village
                         _underConstruction.Remove(building);
                     }                    
                 }
-            }
-        }
-        public void AddConstruction(int constructionChoice)
-        {   
-            if (ResourceCalculation(_buildingList[constructionChoice]))
-            {
-                Building fromList = _buildingList[constructionChoice];
-                Building newInstance = (Building)fromList.Clone();
-
-                _underConstruction.Add(newInstance);
             }
         }
         public bool ResourceCalculation(Building buildingToCheck)
@@ -335,17 +346,26 @@ namespace The_Village
                 Console.WriteLine($"Occupation: {worker.Occupation}, IsHungry: {worker.IsHungry}, DaysHungry: {worker.DaysHungry}, {worker.GetHashCode()}");
             }
         }        
-        public void SaveProgress() 
+        public void SaveProgress(Village village, string sqlQuarry) 
         {
+            sqlQuarry = "insert into Village (Food, DaysGone ...)";
 
+            sqlQuarry = sqlQuarry.Replace("@Food", $"'{village.Food}'");
+            sqlQuarry = sqlQuarry.Replace("@DaysGone", $"'{village.DaysGone}'");            
+
+            _dbConnection.Save(sqlQuarry);
         }
         public Village LoadProgress() 
         {
-            string sqlQuery = "select * from Village"; //hur vet den??
+            string sqlQuery = "select * from Village";
 
             var outputVillageState = _dbConnection.Load(sqlQuery);
 
             return outputVillageState;            
+        }
+        public void AddRandomWorker()
+        {
+            AddWorker(_randomizer.RandomInt());
         }
     }
 }

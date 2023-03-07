@@ -15,13 +15,12 @@ namespace The_Village
         //osv .. ?
 
 
-        public virtual void Save()
+        public virtual void Save(string sqlQuarry)
         {
-            //Connect to db, send current village state
+            // connection.Execute(sqlQuarry)
         }
         public virtual Village Load(string sqlQuery)
         {            
-            //
             Village village = new Village();
 
             village.DaysGone = 99;

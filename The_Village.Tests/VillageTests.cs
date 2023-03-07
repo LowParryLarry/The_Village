@@ -4,6 +4,7 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Security.AccessControl;
 using System.Xml.Linq;
 namespace The_Village.Tests
@@ -336,11 +337,12 @@ namespace The_Village.Tests
             //Arrange
             Village village = new Village();
 
-            //Act
             village.AddWorker(3); //Builder
             village.AddWorker(0); //Lumberjack
             village.AddWorker(1); //Miner
             village.AddWorker(2); //Farmer
+            
+            //Act
 
             DayIterator(5, village); // 5 Metal
 
@@ -539,25 +541,26 @@ namespace The_Village.Tests
 
         [Fact]
         public void LoadProgress_GetDataFromDB_ShouldInsertDataToCurrentGame()
-        {
+        {            
+            //Arrange    
             Mock<DatabaseConnection>dbcMock = new Mock<DatabaseConnection>();
 
             Village village = new Village(dbcMock.Object);
 
             dbcMock
                 .Setup(mock => mock.Load("select * from Village"))
-                .Returns(GetSampleVillage());
+                .Returns(MockVillage());
 
-            var expected = GetSampleVillage();
-            
-            var actual = village.LoadProgress();
+            Village expected = MockVillage();
 
+            //Act
+            Village actual = village.LoadProgress();
 
+            //Assert
             Assert.True(actual != null);
-            Assert.Equal(expected.Food, actual.Food);
+            Assert.Equal(expected.Food, actual.Food); //11 11
         }
-
-        private Village GetSampleVillage()
+        private Village MockVillage()
         {
             Village village = new Village();
 
@@ -565,6 +568,39 @@ namespace The_Village.Tests
             village.Food = 11;
 
             return village;
+        }
+
+        [Fact]
+        public void AddRandomWorker_DoWork_ShouldDoCorrectWork()
+        {
+            //Arrange
+            Mock<Randomizer>randMock = new Mock<Randomizer>();            
+
+            Village village = new Village();
+            village.Randomizer = randMock.Object;
+
+
+
+            randMock
+                .Setup(mock => mock.RandomInt())
+                .Returns(0);
+
+            village.AddRandomWorker();
+            village.Day();
+
+
+
+
+            //Act
+
+
+
+            //Assert
+            Assert.Equal(1, village.Wood);
+            Assert.Equal("Lumberjack", village.Workers.First().Occupation);
+
+
+
         }
 
 

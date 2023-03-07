@@ -107,7 +107,7 @@ namespace The_Village
             Console.SetCursorPosition(4, 19);
             Console.WriteLine("4. Builder");
 
-            Village.AddWorker(ReadIntInstantly(4) - 1);
+            Village.AddWorker(ReadIntInstantly(4) - 1);            
         }
         public void BuildingMenu()
         {
@@ -261,8 +261,5 @@ namespace The_Village
                 PrintYouLoose();
             }
         }
-
-
-
     }
 }

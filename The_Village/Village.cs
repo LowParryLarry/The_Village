@@ -46,7 +46,9 @@ namespace The_Village
             get { return _workers; }
         }
         public List<Worker> WorkerList
-        { get { return _workerList; } }
+        {
+            get { return _workerList; }
+        }
         public List<Building> Buildings 
         {
             get { return _buildings; }
@@ -81,16 +83,8 @@ namespace The_Village
             _wood = 0;
             _metal = 0;
             _daysGone = 0;
-            //_dbConnection = new DatabaseConnection();
-            //_randomizer = new Randomizer();
-        }
-        public Village(DatabaseConnection dbConnection)
-        {
-            _dbConnection = dbConnection;
-        }
-        public Village(Randomizer randomizer)
-        {
-            _randomizer = randomizer;
+            _dbConnection = new DatabaseConnection();
+            _randomizer = new Randomizer();
         }
         public void VillageSetup()
         {
@@ -348,20 +342,29 @@ namespace The_Village
         }        
         public void SaveProgress(Village village, string sqlQuarry) 
         {
-            sqlQuarry = "insert into Village (Food, DaysGone ...)";
+            sqlQuarry = "insert into Village (DaysGone, Food ...)";
 
-            sqlQuarry = sqlQuarry.Replace("@Food", $"'{village.Food}'");
             sqlQuarry = sqlQuarry.Replace("@DaysGone", $"'{village.DaysGone}'");            
+            sqlQuarry = sqlQuarry.Replace("@Food", $"'{village.Food}'");
 
             _dbConnection.Save(sqlQuarry);
         }
-        public Village LoadProgress() 
+        public void LoadProgress() 
         {
             string sqlQuery = "select * from Village";
 
-            var outputVillageState = _dbConnection.Load(sqlQuery);
+            var output = _dbConnection.Load(sqlQuery);                        
 
-            return outputVillageState;            
+            _food = output._food;
+            _wood = output._wood;
+            _metal = output._metal;
+            _daysGone = output._daysGone;                      
+            _workerList = output._workerList;
+            _workers = output._workers;
+            _graveyard = output._graveyard;
+            _buildingList = output._buildingList;
+            _underConstruction = output._underConstruction;
+            _buildings = output._buildings;            
         }
         public void AddRandomWorker()
         {

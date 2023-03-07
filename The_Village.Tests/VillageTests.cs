@@ -9,32 +9,33 @@ using System.Security.AccessControl;
 using System.Xml.Linq;
 namespace The_Village.Tests
 {
-    //MethodName_StateUnderTest_ExpectedBehavior
-    //There are arguments against this strategy that if method names
-    //change as part of code refactoring than test name like this should
-    //also change or it becomes difficult to comprehend at a later stage.
-    //
-    //isAdult_AgeLessThan18_False
-    //withdrawMoney_InvalidAccount_ExceptionThrown
-    //admitStudent_MissingMandatoryFields_FailToAdmit
-    //https://dzone.com/articles/7-popular-unit-test-naming
+    /*
+    MethodName_StateUnderTest_ExpectedBehavior
+    There are arguments against this strategy that if method names
+    change as part of code refactoring than test name like this should
+    also change or it becomes difficult to comprehend at a later stage.
+    
+    isAdult_AgeLessThan18_False
+    withdrawMoney_InvalidAccount_ExceptionThrown
+    admitStudent_MissingMandatoryFields_FailToAdmit
+    https://dzone.com/articles/7-popular-unit-test-naming
+    https://xunit.net/docs/shared-context
+    */
 
-
-    //https://xunit.net/docs/shared-context
-
-    //Building indices:
-    //0 = House
-    //1 = Farm
-    //2 = Woodmill
-    //3 = Quarry
-    //4 = Castle
-    //
-    //Worker indices:
-    //0 = Lumberjack, AddWood
-    //1 = Miner, AddMetal
-    //2 = Farmer, AddFood
-    //3 = Builder, Build
-
+    /*
+    Building indices:
+    0 = House
+    1 = Farm
+    2 = Woodmill
+    3 = Quarry
+    4 = Castle
+    
+    Worker indices:
+    0 = Lumberjack, AddWood
+    1 = Miner, AddMetal
+    2 = Farmer, AddFood
+    3 = Builder, Build
+    */
     public class VillageTests
     {
         private void AddWorkerIterator(int workerIndex, int iterations, Village village)
@@ -58,13 +59,11 @@ namespace The_Village.Tests
         [InlineData(3, 3)]
         public void AddWorker_AddThreeWorkers_ListCountThree(int iterations, int expected)
         {
-            //AddWorker() 1.
-
             //Arrange
             Village village = new Village();
             
             //Act
-            AddWorkerIterator(0, iterations, village);
+            AddWorkerIterator(0, iterations, village); //Lumberjack
 
             //Assert
             Assert.Equal(expected, village.Workers.Count);         
@@ -75,11 +74,8 @@ namespace The_Village.Tests
         [InlineData(20, 6)]        
         public void AddWorker_NotEnoughHouses_FailToAdd(int iterator, int expected)
         {
-            //AddWorker() 2.
-
             //Arrange            
             Village village = new Village();
-            //int expected = 6;
 
             //Act
             AddWorkerIterator(0, iterator, village);
@@ -93,8 +89,6 @@ namespace The_Village.Tests
         [InlineData(4, 20, 330)]
         public void AddWorker_RunningDay_WorkerShouldAddResource(int workerIterations, int dayIterations, int expected)
         {
-            //AddWorker() 3.
-
             //Arrange            
             Village village = new Village();            
 
@@ -109,7 +103,10 @@ namespace The_Village.Tests
         [Fact]
         public void Day_RunDayWithoutWorkers_DaysPass()
         {
-            //Day() 1.
+            /*
+            Win and loose conditions are held by Game class. Hence the village can 
+            go to 10 days without workers.
+             */
 
             //Arrange            
             Village village = new Village();
@@ -127,8 +124,6 @@ namespace The_Village.Tests
         [InlineData(10, 10, 10, 10, 30)]
         public void Day_RunDayWithWorkersAndWithFood_ShouldDoWorkAndFeed(int dayIterations, int expectedDays, int expectedWood, int expectedMetal, int expectedFood)
         {
-            //Day() 2.
-
             //Arrange            
             Village village = new Village();
             
@@ -152,7 +147,14 @@ namespace The_Village.Tests
         [InlineData(42, 6, 6)]
         public void Day_RunDayWithWorkersAndWithoutFood_WorkersDie(int dayIterations, int workerIterations, int expectedInGraveyard)
         {
-            //Day() 3.
+            /*
+            Day 1: All workers feed. Food 4.
+            Day 2: Two workers become hungry.
+            Day 3: Remaining workers become hungry.
+            ...
+            Day 41: Two workers die.
+            Day 42: Remaining workers die.             
+             */
 
             //Arrange            
             Village village = new Village();                       
@@ -169,41 +171,37 @@ namespace The_Village.Tests
         [Fact]
         public void AddConstruction_HavingEnoughResources_BuildingAdded()
         {
-            //AddConstruction() 1.
-
             //Arrange            
             Village village = new Village();
             village.Wood = 5;
-            village.Metal = 2;
+            village.Metal = 2;            
+
+            //Act
+            village.AddConstruction(1); //Farm
 
             int expectedWood = 0;
             int expectedMetal = 0;
-            int expectedCount = 1;
-
-            //Act
-            village.AddConstruction(1);
+            int expectedUnderConstructionCount = 1;
 
             //Assert
             Assert.Equal(expectedWood, village.Wood);
             Assert.Equal(expectedMetal, village.Metal);
-            Assert.Equal(expectedCount, village.UnderConstruction.Count);
+            Assert.Equal(expectedUnderConstructionCount, village.UnderConstruction.Count);
 
         }
 
         [Fact]
         public void AddConstruction_NotHavingEnoughResources_BuildingNotAdded()
         {
-            //AddConstruction() 2.
-
             //Arrange            
             Village village = new Village();
 
+            //Act
+            village.AddConstruction(4);
+            
             int expectedWood = 0;
             int expectedMetal = 0;
             int expectedUnderConstructionCount = 0;
-
-            //Act
-            village.AddConstruction(4);
 
             //Assert
             Assert.Equal(expectedWood, village.Wood);
@@ -214,34 +212,15 @@ namespace The_Village.Tests
         [Fact]
         public void AddConstruction_WoodmillAdded_HigerWoodrate()
         {
-            //Upgrades 1.
-
-            /* Indices:
-            Buildings:
-            0 = House, 5, 0, 3
-            1 = Farm, 5, 2, 5
-            2 = Woodmill, 5, 1, 5
-            3 = Quarry, 3, 5, 7
-            4 = Castle, 50, 50, 50
-            
-            Workers:
-            0 = Lumberjack, AddWood
-            1 = Miner, AddMetal
-            2 = Farmer, AddFood
-            3 = Builder, Build
+            /*
+            Workers work in the order they are added. If the builder is not first
+            in the workers list, the new gathering rate will kick in one day later.
             */
 
             //Arrange
             Village village = new Village();
 
             //Act
-            /*
-             * Om jag ska följa uppgiften exakt så måste en builder läggas till först.
-             * Detta eftersom workers arbetar i den ordning de ligger i listan. Om
-             * builder ligger efter lumberjack kommer uppgraderingen gälla först
-             * dagen efter.
-             */
-
             village.AddWorker(3); //Builder
             village.AddWorker(0); //Lumberjack
             village.AddWorker(1); //Miner
@@ -269,21 +248,9 @@ namespace The_Village.Tests
         [Fact]
         public void AddConstruction_Farm_HigerFoodRate()
         {
-            //Upgrades 2.1
-
-            /* Indices:
-            Buildings:
-            0 = House, 5, 0, 3
-            1 = Farm, 5, 2, 5
-            2 = Woodmill, 5, 1, 5
-            3 = Quarry, 3, 5, 7
-            4 = Castle, 50, 50, 50
-            
-            Workers:
-            0 = Lumberjack, AddWood
-            1 = Miner, AddMetal
-            2 = Farmer, AddFood
-            3 = Builder, Build
+            /*
+            Workers work in the order they are added. If the builder is not first
+            in the workers list, the new gathering rate will kick in one day later.
             */
 
             //Arrange
@@ -295,16 +262,16 @@ namespace The_Village.Tests
             village.AddWorker(1); //Miner
             village.AddWorker(2); //Farmer
 
-            DayIterator(5, village); // 15 Food
+            DayIterator(5, village); // +5 food, 15 food
 
             village.AddConstruction(1); //Farm, 15 Food
 
-            DayIterator(4, village); 
+            DayIterator(4, village); //+4 food, 19 food
 
             int expetctedFoodPreFarm = 19;
             int actualFoodPreFarm = village.Food;
 
-            village.Day();
+            village.Day(); //Farm finnishes, 19 - 4 + 15 = 30 food
 
             int expetctedFoodPostFarm = 30;
             int actualFoodPostFarm = village.Food;
@@ -317,21 +284,9 @@ namespace The_Village.Tests
         [Fact]
         public void AddConstruction_Quarry_HigerMetalRate()
         {
-            //Upgrades 2.2
-
-            /* Indices:
-            Buildings:
-            0 = House, 5, 0, 3
-            1 = Farm, 5, 2, 5
-            2 = Woodmill, 5, 1, 5
-            3 = Quarry, 3, 5, 7
-            4 = Castle, 50, 50, 50
-            
-            Workers:
-            0 = Lumberjack, AddWood
-            1 = Miner, AddMetal
-            2 = Farmer, AddFood
-            3 = Builder, Build
+            /*
+            Workers work in the order they are added. If the builder is not first
+            in the workers list, the new gathering rate will kick in one day later.
             */
 
             //Arrange
@@ -344,16 +299,16 @@ namespace The_Village.Tests
             
             //Act
 
-            DayIterator(5, village); // 5 Metal
+            DayIterator(5, village); //+5 Metal
 
-            village.AddConstruction(3); //Quarry, 0 Metal
+            village.AddConstruction(3); //Quarry, -5 Metal
 
-            DayIterator(6, village); // 6 Metal
+            DayIterator(6, village); // One miner, 6 days, +6 Metal
 
             int expetctedMetalPreQuarry = 6;
             int actualMetalPreQuarry = village.Metal;
 
-            village.Day();
+            village.Day(); //Quarry finnishes, 6 + 3 = 9 metal 
 
             int expetctedMetalPostQuarry = 9;
             int actualMetalPostQuarry = village.Metal;
@@ -366,23 +321,6 @@ namespace The_Village.Tests
         [Fact]
         public void AddConstruction_DoSomeWork_FinnishedByCorrectDay()
         {
-            //3.
-
-            /* Indices:
-            Buildings:
-            0 = House, 5, 0, 3
-            1 = Farm, 5, 2, 5
-            2 = Woodmill, 5, 1, 5
-            3 = Quarry, 3, 5, 7
-            4 = Castle, 50, 50, 50
-            
-            Workers:
-            0 = Lumberjack, AddWood
-            1 = Miner, AddMetal
-            2 = Farmer, AddFood
-            3 = Builder, Build
-            */
-
             //Arrange
             Village village = new Village();
 
@@ -398,18 +336,18 @@ namespace The_Village.Tests
 
             DayIterator(49, village);
 
-            int expectedCastleInBuildingsPre = 3;
-            int actualCastleInBuildingsPre = village.Buildings.Count();
+            int expectedBuildingsPre = 3; //Village starts with three houses
+            int actualBuildingsPre = village.Buildings.Count();
 
-            DayIterator(1, village);
+            DayIterator(1, village); //Castle finnished
 
-            int expectedCastleInBuildingsPost = 4;
-            int actualCastleInBuildingsPost = village.Buildings.Count();
+            int expectedBuildingsPost = 4;
+            int actualBuildingsPost = village.Buildings.Count();
             var actualObject = village.Buildings.Last();
 
             //Assert
-            Assert.Equal(expectedCastleInBuildingsPre, actualCastleInBuildingsPre);
-            Assert.Equal(expectedCastleInBuildingsPost, actualCastleInBuildingsPost);
+            Assert.Equal(expectedBuildingsPre, actualBuildingsPre);
+            Assert.Equal(expectedBuildingsPost, actualBuildingsPost);
             Assert.Equal("Castle", actualObject.Name);
             Assert.True(actualObject.IsComplete);
         }
@@ -417,15 +355,13 @@ namespace The_Village.Tests
         [Fact]
         public void DoWork_DoNotFeedWorkers_ShouldNotWork()
         {
-            //1.
-
             //Arrange
             Village village = new Village();
 
             //Act
             AddWorkerIterator(0, 5, village); //5x Lumberjack
 
-            DayIterator(2, village);
+            DayIterator(2, village); //-10 food, +10 wood
 
             int expwctedFood = 0;
             int actualFood = village.Food;
@@ -433,7 +369,7 @@ namespace The_Village.Tests
             int expectedWoodPre = 10;
             int actualWoodPre = village.Wood;
 
-            DayIterator(1, village);
+            DayIterator(1, village); //All workers hungry, should not work
 
             int expectedWoodPost = 10;
             int actualWoodPost = village.Wood;
@@ -463,7 +399,7 @@ namespace The_Village.Tests
             int expectedGraveyardCountPre = 0;
             int actualGraveyardCountPre = village.Graveyard.Count;
 
-            DayIterator(1, village);
+            DayIterator(1, village); //Lumberjack dies on day 50, should be moved to graveyard
 
             int expectedWorkerCountPost = 0;
             int actualWorkerCountPost = village.Workers.Count;
@@ -481,6 +417,8 @@ namespace The_Village.Tests
 
         }
 
+        //Kan kolla BuryDead
+        
         /*         
             Direkt när en worker dör så flyttas den till graveyard och säts till false, efter 40 dagar som
             hungrig. Jag skrev koden så innan jag kommit till test-delen mest för jag tyckte det var roligt
@@ -498,35 +436,20 @@ namespace The_Village.Tests
         [Fact]
         public void WinGame_GatherResourcesAndBuildCastle_CastleExistsAndGameEnds()
         {
-            /* Indices:
-            Buildings:
-            0 = House, 5, 0, 3
-            1 = Farm, 5, 2, 5
-            2 = Woodmill, 5, 1, 5
-            3 = Quarry, 3, 5, 7
-            4 = Castle, 50, 50, 50
-            
-            Workers:
-            0 = Lumberjack, AddWood
-            1 = Miner, AddMetal
-            2 = Farmer, AddFood
-            3 = Builder, Build
-            */
-
             //Arrange
             Village village = new Village();
 
             //Act
-            village.AddWorker(0);
-            village.AddWorker(1);
-            village.AddWorker(2);
-            village.AddWorker(3);
+            village.AddWorker(0); //Lumberjack
+            village.AddWorker(1); //Miner
+            village.AddWorker(2); //Farmer
+            village.AddWorker(3); //Builder
 
-            DayIterator(50, village);
+            DayIterator(50, village); //Generate resources for Castle
 
-            village.AddConstruction(4);
+            village.AddConstruction(4); //Add Castle
 
-            DayIterator(50, village);
+            DayIterator(50, village); //Wait for Castle to be built
 
             int expectedDays = 100;
             int actualDays = village.DaysGone;
@@ -543,22 +466,23 @@ namespace The_Village.Tests
         public void LoadProgress_GetDataFromDB_ShouldInsertDataToCurrentGame()
         {            
             //Arrange    
-            Mock<DatabaseConnection>dbcMock = new Mock<DatabaseConnection>();
-
-            Village village = new Village(dbcMock.Object);
-
+            Mock<DatabaseConnection>dbcMock = new Mock<DatabaseConnection>();            
+            Village village = new Village();
+            village.DBConnection = dbcMock.Object;
+            
             dbcMock
                 .Setup(mock => mock.Load("select * from Village"))
                 .Returns(MockVillage());
-
-            Village expected = MockVillage();
-
+                                    
             //Act
-            Village actual = village.LoadProgress();
+            village.LoadProgress();
 
-            //Assert
-            Assert.True(actual != null);
-            Assert.Equal(expected.Food, actual.Food); //11 11
+            int actual = village.Food;
+            int expected = 11;
+
+
+            //Assert            
+            Assert.Equal(expected, actual);
         }
         private Village MockVillage()
         {
@@ -571,52 +495,30 @@ namespace The_Village.Tests
         }
 
         [Fact]
-        public void AddRandomWorker_DoWork_ShouldDoCorrectWork()
+        public void AddRandomWorker_RunDay_ShouldGatherWood()
         {
             //Arrange
-            Mock<Randomizer>randMock = new Mock<Randomizer>();            
-
+            Mock<Randomizer>randMock = new Mock<Randomizer>();
             Village village = new Village();
             village.Randomizer = randMock.Object;
 
-
-
             randMock
                 .Setup(mock => mock.RandomInt())
-                .Returns(0);
+                .Returns(0); //Lumberjack
 
+            //Act
             village.AddRandomWorker();
             village.Day();
 
+            string expectedOccupation = "Lumberjack";
+            string actualOccupation = village.Workers.First().Occupation;
 
-
-
-            //Act
-
-
+            int expectedWood = 1;
+            int actualWood = village.Wood;
 
             //Assert
-            Assert.Equal(1, village.Wood);
-            Assert.Equal("Lumberjack", village.Workers.First().Occupation);
-
-
-
+            Assert.Equal(expectedWood, actualWood);
+            Assert.Equal(expectedOccupation, actualOccupation);
         }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     }
 }

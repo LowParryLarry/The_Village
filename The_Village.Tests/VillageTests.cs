@@ -53,6 +53,8 @@ namespace The_Village.Tests
             }
         }
         
+        //Insåg efter ett par metoder att InlineData kanske blir överflödiga vid enklare test.
+        
         [Theory]
         [InlineData(1, 1)]
         [InlineData(2, 2)]
@@ -383,8 +385,6 @@ namespace The_Village.Tests
         [Fact]
         public void BuryDead_Passdays_WorkerDies()
         {
-            //2.
-
             //Arrange
             Village village = new Village();
 
@@ -414,24 +414,43 @@ namespace The_Village.Tests
             
             Assert.Equal(expectedWorkerCountPost, actualWorkerCountPost);
             Assert.Equal(expectedGraveyardCountPost, actualGraveyardCountPost);
-
         }
 
-        //Kan kolla BuryDead
-        
         /*         
             Direkt när en worker dör så flyttas den till graveyard och säts till false, efter 40 dagar som
             hungrig. Jag skrev koden så innan jag kommit till test-delen mest för jag tyckte det var roligt
             att ha en graveyard, inte för att underlätta testet.
-        
-            Dessa test svaras på i funktionen ovan.
 
             3.  Det skall inte gå att mata en arbetare med alive = false
-                I min kod flyttas en worker direkt till graveyard när den dör.
+                I min kod flyttas en worker direkt till graveyard när den dör.                
             
             4.  Kolla att BuryDead() funktionen tar bort de som har alive = false
                 I min kod flyttas en worker direkt till graveyard när den dör.
+
+            Nedan följer ett test som bevisar att workers i min graveyard faktiskt är döda.
         */
+
+        [Fact]
+        public void BuryDead_RunDaysWithoutFood_WorkersDieIsAliveFalse()
+        {
+            //Arrange
+            Village village = new Village();
+
+            village.AddWorker(0);
+            village.AddWorker(0);
+            village.AddWorker(0);
+
+            //Act
+            DayIterator(100, village);
+
+            //Assert
+            Assert.Collection(village.Graveyard,
+            worker => Assert.False(worker.IsAlive),
+            worker => Assert.False(worker.IsAlive),
+            worker => Assert.False(worker.IsAlive)
+            );
+
+        }
 
         [Fact]
         public void WinGame_GatherResourcesAndBuildCastle_CastleExistsAndGameEnds()
@@ -471,11 +490,11 @@ namespace The_Village.Tests
             village.DBConnection = dbcMock.Object;
             
             dbcMock
-                .Setup(mock => mock.Load("select * from Village"))
+                .Setup(mock => mock.Load())
                 .Returns(MockVillage());
                                     
             //Act
-            village.LoadProgress();
+            village.LoadProgress(); //Uses Load()
 
             int actual = village.Food;
             int expected = 33;

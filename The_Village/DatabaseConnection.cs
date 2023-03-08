@@ -68,7 +68,7 @@ namespace The_Village
             _underConstruction = village.UnderConstruction;
             _buildings = village.Buildings;
         }
-        public virtual Village Load(string sqlQuery)
+        public virtual Village Load()
         {            
             Village village = new Village();
 

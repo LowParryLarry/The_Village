@@ -10,13 +10,11 @@ namespace The_Village
 {
     internal class Game
     {
-        private Village _village;
-        
+        private Village _village;        
         public Game()
         {
             _village = new Village();
         }
-
         public Village Village
         {
             get { return _village; }
@@ -40,6 +38,11 @@ namespace The_Village
         }
         public int ReadIntInstantly(int max)
         {
+            /*
+            Reads keyboardpresses only if it is int and instantly returns that int. 
+            The max parameter sets the highest choice possible for the current menu.
+            */
+
             while (true)
             {
                 ConsoleKeyInfo input = Console.ReadKey(true);
@@ -70,9 +73,15 @@ namespace The_Village
             Console.WriteLine("2. Add a building");
             
             Console.SetCursorPosition(4, 17);
-            Console.WriteLine("3. Pass time");            
+            Console.WriteLine("3. Pass time");
 
-            switch (ReadIntInstantly(3) - 1)
+            Console.SetCursorPosition(4, 18);
+            Console.WriteLine("4. Save game");
+
+            Console.SetCursorPosition(4, 19);
+            Console.WriteLine("5. Load game");
+
+            switch (ReadIntInstantly(5) - 1)
             {
                 case 0:
                     WorkerMenu();
@@ -82,6 +91,12 @@ namespace The_Village
                     break;
                 case 2:
                     PassTimeMenu();
+                    break;
+                case 3:
+                    Village.SaveProgress();
+                    break;
+                case 4:
+                    Village.LoadProgress();
                     break;
             }
 
@@ -140,6 +155,7 @@ namespace The_Village
             Console.CursorVisible = true;
 
             ClearBottomBox();
+
             Console.SetCursorPosition(4, 15);
             Console.Write("How many days? ");
 
@@ -152,8 +168,10 @@ namespace The_Village
             }
             else 
             {   ClearBottomBox();
+
                 Console.SetCursorPosition(4, 15);
                 Console.WriteLine("Enter a number!");
+                
                 Console.ReadKey(true);
 
                 PassTimeMenu();
@@ -267,7 +285,7 @@ namespace The_Village
 
             Console.Clear();
 
-            Console.ForegroundColor = ConsoleColor.DarkRed;
+            Console.ForegroundColor = ConsoleColor.Yellow;
             Console.WriteLine($@"
 ╔═══════════════════════════╗
 ║                           ║  
@@ -324,6 +342,8 @@ namespace The_Village
             Console.SetCursorPosition(1, 17);
             Console.WriteLine("                           ");
             Console.SetCursorPosition(1, 18);
+            Console.WriteLine("                           ");
+            Console.SetCursorPosition(1, 19);
             Console.WriteLine("                           ");
 
         }

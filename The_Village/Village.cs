@@ -301,7 +301,7 @@ namespace The_Village
         public int TotalWorkerSlots()
         {   
             /*
-            Checks total workerslots. Number of houses * 2 = total worker slots. 
+            Checks total workerslots. Number of houses * 2 = total worker slots.
             */
 
             int totalWorkerSlots = 0;
@@ -321,9 +321,7 @@ namespace The_Village
         }
         public void LoadProgress() 
         {
-            string sqlQuery = "select * from Village";
-
-            var output = _dbConnection.Load(sqlQuery);                        
+            var output = _dbConnection.Load();                        
 
             _food = output._food;
             _wood = output._wood;

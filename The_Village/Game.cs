@@ -99,7 +99,6 @@ namespace The_Village
                     Village.LoadProgress();
                     break;
             }
-
         }
         public void WorkerMenu()
         {
@@ -319,7 +318,7 @@ namespace The_Village
             Console.SetCursorPosition(left, 5);
             Console.WriteLine($"Under construction: {Village.UnderConstruction.Count}");
             Console.SetCursorPosition(left, 6);
-            Console.WriteLine($"Buildings: {Village.Buildings.Count - 3}");
+            Console.WriteLine($"Buildings: {Village.Buildings.Count}");
             Console.SetCursorPosition(left, 7);
             Console.WriteLine($"Workers: {Village.Workers.Count}");
             Console.SetCursorPosition(left, 8);

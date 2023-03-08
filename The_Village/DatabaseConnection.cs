@@ -63,10 +63,10 @@ namespace The_Village
             _wood = village.Wood;
             _metal = village.Metal;
             _daysGone = village.DaysGone;
-            _workers = village.Workers;
-            _graveyard = village.Graveyard;
-            _underConstruction = village.UnderConstruction;
-            _buildings = village.Buildings;
+            village.Workers.ForEach(w => { _workers.Add(w); });
+            village.Graveyard.ForEach(w => { _graveyard.Add(w); });
+            village.UnderConstruction.ForEach(w => { _underConstruction.Add(w); });
+            village.Buildings.ForEach(w => { _buildings.Add(w); });   
         }
         public virtual Village Load()
         {            

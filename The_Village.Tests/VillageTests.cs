@@ -488,28 +488,20 @@ namespace The_Village.Tests
             Mock<DatabaseConnection>dbcMock = new Mock<DatabaseConnection>();            
             Village village = new Village();
             village.DBConnection = dbcMock.Object;
-            
+
             dbcMock
-                .Setup(mock => mock.Load())
-                .Returns(MockVillage());
+                .Setup(mock => mock.GetWood())
+                .Returns(10);
                                     
             //Act
-            village.LoadProgress(); //Uses Load()
+            village.LoadProgress();
 
-            int actual = village.Food;
-            int expected = 33;
+            int actual = village.Wood;
+            int expected = 10;
 
             //Assert            
             Assert.Equal(expected, actual);
-        }
-        private Village MockVillage()
-        {
-            Village village = new Village();
-
-            village.Food = 33;
-
-            return village;
-        }
+        }       
 
         [Fact]
         public void AddRandomWorker_RunDay_ShouldGatherWood()

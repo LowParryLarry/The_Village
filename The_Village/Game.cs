@@ -40,7 +40,7 @@ namespace The_Village
         {
             /*
             Reads keyboardpresses only if it is int and instantly returns that int. 
-            The max parameter sets the highest choice possible for the current menu.
+            The max parameter sets the number of choices possible for the current menu.
             */
 
             while (true)
@@ -75,13 +75,7 @@ namespace The_Village
             Console.SetCursorPosition(4, 17);
             Console.WriteLine("3. Pass time");
 
-            Console.SetCursorPosition(4, 18);
-            Console.WriteLine("4. Save game");
-
-            Console.SetCursorPosition(4, 19);
-            Console.WriteLine("5. Load game");
-
-            switch (ReadIntInstantly(5) - 1)
+            switch (ReadIntInstantly(3) - 1)
             {
                 case 0:
                     WorkerMenu();
@@ -91,12 +85,6 @@ namespace The_Village
                     break;
                 case 2:
                     PassTimeMenu();
-                    break;
-                case 3:
-                    Village.SaveProgress();
-                    break;
-                case 4:
-                    Village.LoadProgress();
                     break;
             }
         }

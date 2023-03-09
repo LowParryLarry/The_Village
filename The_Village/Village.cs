@@ -321,16 +321,7 @@ namespace The_Village
         }
         public void LoadProgress() 
         {
-            var output = _dbConnection.Load();                        
-
-            _food = output._food;
-            _wood = output._wood;
-            _metal = output._metal;
-            _daysGone = output._daysGone;                                  
-            _workers = output._workers;
-            _graveyard = output._graveyard;            
-            _underConstruction = output._underConstruction;
-            _buildings = output._buildings;            
+            Wood = _dbConnection.GetWood();
         }
         public void AddRandomWorker()
         {
